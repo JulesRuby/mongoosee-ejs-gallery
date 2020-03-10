@@ -1,0 +1,28 @@
+<%- include('partials/head') %>
+<%- include('partials/header') %>
+
+<body>
+  <main>
+    <h2><%= content %></h2>
+    
+    <section class="gallery">
+      
+      <% starterImages.forEach(function(object) { %>
+        <figure class="gal-fig">
+          <a href="gallery/<%= object.id %>">
+            <img src="images/sm/<%= object.fileName %>" alt="<%= object.title %>">
+          </a>
+          <figcaption>
+            <h3><%= object.attribution.credit %></h3>
+          </figcaption>
+        </figure>
+        <% }) %>
+      
+    </section>
+    
+  </main>
+  <%- include('partials/footer') %>
+</body>
+</html>
+
+

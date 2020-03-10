@@ -1,0 +1,214 @@
+/* resets */
+* {
+  box-sizing: border-box;
+}
+
+html {
+  height: 100vh;
+}
+
+body {
+  display: flex; /**/
+  flex-direction: column;
+
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+
+  font-family: 'segoe ui', helvetica, sans-serif;
+
+  background-color: rgb(255, 247, 213);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  /* font-family: Georgia, 'Times New Roman', Times, serif; */
+  font-size: 16px;
+}
+
+ul,
+li,
+a {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  text-decoration: none;
+  color: black;
+  font-size: 20px;
+}
+
+/* custom properties */
+/* 
+:root {
+  --primary-c: 
+} */
+
+/* flex declaration */
+/* I guess I could also just make a flex class to add to things, but I'll do that later rather than wading through my .ejs files right now... Le tired. */
+header,
+ul,
+main,
+footer {
+  display: flex;
+}
+
+
+
+/* header style */
+
+header {
+  flex-direction: column;
+  justify-content: space-evenly;
+
+  width:100vw;
+  min-height: 50vh;
+  background-color: aquamarine;
+}
+
+header > h1 {
+  font-size: 36px;
+
+  text-align: center;
+}
+
+/* Nav */
+
+ul {
+  justify-content: space-evenly;
+}
+
+ul > li {
+  flex-grow: 1;
+
+  min-width: 100px;
+  max-width: 300px;
+}
+
+li,
+li > a {
+  display: block;
+  text-align: center;
+}
+
+li > a {
+  padding: 5px;
+}
+
+li > a:hover {
+  background-color: lightsalmon;
+  color: aquamarine;
+}
+
+.current-page {
+  border-bottom: 3px solid lightsalmon;
+}
+
+
+
+/* main content styling */
+
+main {
+  flex-direction: column;
+  align-items: center;
+
+  padding: 5vh 15vw;
+
+  /* height: 100%; */
+}
+
+main > h2 {
+  font-size: 24px;
+}
+
+main > section {
+  background-color: plum;
+
+  padding: 50px;
+  margin-top: 50px;
+  width: 100%;
+
+  border-radius: 15px;
+}
+
+
+
+/* footer styling */
+
+footer {
+  justify-content: center;
+  align-items: center;
+  justify-self: flex-end;
+  min-height: 10vh;
+  
+  background-color: aquamarine;
+
+  text-align: center;
+}
+
+footer > p {
+  margin: 0;
+}
+
+
+
+/* individual page styling */
+
+.home-img {
+  width: 100%;
+}
+
+.blog-img,
+.gal-img {
+  margin: 10px;
+
+  width: 30%;
+  height: 400px;
+}
+
+.blog-img {
+  float: right;
+}
+
+/* Actual functioning gallery styling */
+
+
+/* This will be used to make the gallery figures "nicer" */
+.gallery {
+  display: flex;
+  justify-content: space-evenly;
+  flex-wrap: wrap;
+}
+
+.gal-fig {
+  background-color: lightsalmon;
+}
+
+.gal-fig img {
+  height: 250px;
+  width: 300px;
+}
+
+.gal-fig > figcaption {
+  text-align: center;
+}
+
+
+/* This will be where the expanded image figures go. */
+
+.expandedFigure {
+  background-color: lightsalmon;
+  margin: auto;
+
+}
+
+.expandedCaption {
+  text-align: center;
+}
+
+.expandedFigure > img {
+  width: 100%;
+}

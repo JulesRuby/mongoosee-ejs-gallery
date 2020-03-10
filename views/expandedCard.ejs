@@ -1,0 +1,27 @@
+<!-- I will have to come back to this and create proper if statement logic to mayb e shift the headers/head to include different stylesheets maybe, ran out of time. -->
+
+<%- include('partials/headexp') %>
+<%- include('partials/headerexp') %>
+
+<body>
+  <main>
+  
+
+  <% starterImages.forEach(function(object) { 
+    if (object.id == imageID) { %>
+      <figure class="expandedFigure">
+        <img src="../images/lrg/<%= object.fileName %>" alt="<%= object.title %>" class="expandedImage">
+        <figcaption class="expandedCaption">
+          <a href="<%= object.attribution.url %>" class="authorAttribution">
+            <%= object.attribution.credit %>
+          </a>
+          <P>
+            <%= object.attribution.source %>
+          </P>
+        </figcaption>
+      </figure>
+      <% }}) %>
+  </main>
+<%- include('partials/footer') %>
+</body>
+</html>

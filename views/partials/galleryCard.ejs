@@ -1,0 +1,12 @@
+<!-- Change and implement later -->
+
+<% gallery.forEach(object) { %>
+  <figure>
+    <a href="images/lrg/<%= object.imageID %>">
+      <img src="<%= images/sm/<%= object.fileName %>" alt="<%= object.title %>">
+    </a>
+    <figcaption>
+      <h3><%= object.attribution.credit %></h3>
+    </figcaption>
+  </figure>
+  <% } %>
