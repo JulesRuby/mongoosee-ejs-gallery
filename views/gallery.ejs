@@ -1,13 +1,13 @@
 <%- include('partials/head') %>
-<%- include('partials/header') %>
+<%- include('partials/headerexp') %>
 
 <body>
   <main>
-    <h2><%= content %></h2>
+    <h2>content</h2>
     
     <section class="gallery">
       
-      <% starterImages.forEach(function(object) { %>
+      <% images.forEach(object => { %>
         <figure class="gal-fig">
           <a href="gallery/<%= object.id %>">
             <img src="images/sm/<%= object.fileName %>" alt="<%= object.title %>">

@@ -7,20 +7,18 @@
   <main>
   
 
-  <% starterImages.forEach(function(object) { 
-    if (object.id == imageID) { %>
-      <figure class="expandedFigure">
-        <img src="../images/lrg/<%= object.fileName %>" alt="<%= object.title %>" class="expandedImage">
+   <figure class="expandedFigure">
+      <img src="../images/lrg/<%= image.fileName %>" alt="<%= image.title %>" class="expandedImage">
         <figcaption class="expandedCaption">
-          <a href="<%= object.attribution.url %>" class="authorAttribution">
-            <%= object.attribution.credit %>
+          <a href="<%= image.attribution.url %>" class="authorAttribution">
+            <%= image.attribution.credit %>
           </a>
           <P>
-            <%= object.attribution.source %>
+            <%= image.attribution.source %>
           </P>
         </figcaption>
       </figure>
-      <% }}) %>
+      
   </main>
 <%- include('partials/footer') %>
 </body>

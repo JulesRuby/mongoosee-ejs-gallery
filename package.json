@@ -5,9 +5,9 @@
     "node": "^12.16.1"
   },
   "description": "Monday, March 9 @ 8pm",
-  "main": "app.js",
+  "main": "snap.js",
   "scripts": {
-    "start": "node app.js"
+    "start": "node snap.js"
   },
   "repository": {
     "type": "git",
@@ -24,6 +24,9 @@
     "dotenv": "^8.2.0",
     "ejs": "^3.0.1",
     "express": "^4.17.1",
-    "moment": "^2.24.0"
+    "moment": "^2.24.0",
+    "mongodb": "^3.5.4",
+    "mongoose": "^5.9.4",
+    "slugify": "^1.4.0"
   }
 }
