@@ -1,101 +1,77 @@
-// Make sure this file is your 'main': in the package.json
+// Make sure this file is your 'main': in the package.json, because I switched to snap.js from app.js, while doing large mutations on my previous work, for testing purposes.
 const path = require('path');
 const express = require('express');
-// const controller = require('./controllers/controller'); //This is from a tutorial and I may well not need it
 const mongoose = require('mongoose');
-const MongoClient = require('mongodb').MongoClient; //Tony's import module
+const MongoClient = require('mongodb').MongoClient; //MongoDB connection used in the import module
 const dotenv = require('dotenv').config();
-var slugify = require('slugify');
 const moment = require('moment');
+// 
 const uri = process.env.MONGODB_URL;
 
 
-//Model
+/////////////////////// Models/Shcema //////////////////////////
 const Image = require('./models/Images.js');
 
-// Modules
+////////////////////// Modules /////////////////////////////////
+
+// Gallery won't really be needed for this assignment any longer, as I am now extracting that data from the db, but keeping it for referencing
 const gallery = require('./gallery');
+// I'm trying to figure out to use the values from pageAttributes.js still, to dynamically render the title and stuff on the views, along side the database calls that populate the gallery. I haven't found out how to really pass data from multiple sources in and have it properly render the page, and it is frustrating me. Maybe If I tried an app.use, similar to how Tony did to assign a class to the current nav-link??
 const pageAttributes = require('./pageAttributes');
+
 
 //creating a year variable to pass into moment, will make app.locals further down. This doesn't save much time, I'm just trying to get the hang of how to use this.
 const dateYear = 'YYYY'
 
 
-// Setup app and engine 
+////////////////////// App and Engine /////////////////////////////////
 const app = express();
 app.set('view engine', 'ejs');
 
 
-//app.locals
+////////////////////// app.locals /////////////////////////////////
 app.locals.dateYear = dateYear;
 app.locals.moment = moment;
 app.locals.starterImages = require('./gallery');
 
 
-// Serve public/static assets 
+////////////////////// Serve static assets /////////////////////////////////
+// Don't really need the /views one right now, I don't think. Just experimenting with ideas.
 app.use(express.static(path.join(__dirname, '/public')));
-app.use(express.static(path.join(__dirname, '/views')));
-
-//Fire controllers
-// connects nback to the controller 
-// controller(app);
+// app.use(express.static(path.join(__dirname, '/views')));
 
 
-// Handle POST requests from new image submissions. This would like be done through a form... Although I'm not toally certain how to actually use an image uploader yet.
+
+////////////////////// POST middleware /////////////////////////////////
+// I think this is to  
+//Handle POST requests from new image submissions. 
 app.use(express.urlencoded({ extended: false }));
-
-// --- Global variables --- //
-// app.use(function(req, res, next){
-//   res.locals.currentIndex = ''; //leave this for now, not totally convinced I should blinbly copy/paste it. Seems like it isn't relvant to my code
-//   res.locals.currentImage = ''; // seems like this is to set the a class to the current tab, styling it to visually let the user know where they are
-//   next();                       // This basically ovverrides the if statement that I used in the code. It's probably a better way to do it      
-// })
+app.use(express.json());
 
 
-// // --- Run ejs --- //
-// app.set('view engine', 'ejs');
-// app.set('views', path.join(__dirname, 'views')); // I have no idea why this part is here, I think it's probably either vestigial or redundant
+////////////////////// Global variables used for navigation emphasis /////////////////////////////////
+// Set variables that will inherit the "current-page" value when the corresponing page is visited, which passes into the nav-link the class="current-page", which styles the link to be emphasized to tell the user which page they are on.
+app.use(function(req, res, next){
+  res.locals.currentIndex = ''; 
+  res.locals.currentAbout = '';
+  res.locals.currentGallery = '';
+  res.locals.currentBlog = ''; 
+  next();                     
+})
 
 
-
-
-
-//Tony's Module, access once I know I can connect//
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// // --- Dropping images into Mongo --- //
-// MongoClient.connect(uri,{ useUnifiedTopology: true,useNewUrlParser: true },  function(err, client) {
-//   if(err) {
-//      console.log('Error occurred while connecting to MongoDB Atlas...\n',err);
-//   }
-//   console.log('Connected...');
-
-//   const db = client.db("gallery");
-//   const imgCol = db.collection('images');
-
-//   imgCol.deleteMany();
-//   console.log('Dropped');
-
-//   imgCol.insertMany(gallery).then(function(cursor) {
-//    console.log(cursor.insertedCount);
-//    client.close()
-//  }).catch(function(err){
-//    console.log(err);
-//  });
-// });
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-// Mongoose connection //
-//define  database URI as process.enc.MONGODB_URL, which is taken from the .env file's string
+////////////////////// Mongoose Connection /////////////////////////////////
+//define  database URI as process.enc.MONGODB_URL, which is taken from the .env file's string, for encryption purposes
 const dbURI = process.env.MONGODB_URL;
 mongoose.connect(dbURI, {
   useUnifiedTopology: true,
   useNewUrlParser: true
 });
 
-// I guess that for now I just accept mongoose.connection is a baked in thing?
+// Get mongoose to deal with all the nitty gritty connection stuff
 var db = mongoose.connection;
 
-
+// Create console logs for success/failure when connecting to the db
 db.on('error', function(error){
   console.log(`Connection Error: ${error.message}`)
 });
@@ -105,100 +81,55 @@ db.once('open', function() {
 });
 
 
-// GET Enpoint handlers
-//Index Page rendered from the 
+////////////////////// GET Handlers /////////////////////////////////
 app.get('/', function(req, res){
-  res.locals.index = pageAttributes.index;
+  res.locals.currentIndex = 'current-page';
   res.render('index', pageAttributes.index);
 });
 
 app.get('/about', function(req, res) {
+  res.locals.currentAbout = 'current-page'
   res.render('about', pageAttributes.about);
 });
 
-// app.get('/blog', function(req, res) {
-//   res.render('blog', pageAttributes.blog);
-// });
-
-// app.get('/gallery', function(req, res) {
-//   res.render('gallery', pageAttributes.gallery);
-// }); 
-
 app.get('/blog', function(req, res) {
+  res.locals.currentBlog = 'current-page'
   res.render('blog', pageAttributes.blog);
 });
-// I can do away with this part, if I can successfully get the Image.find to pull from the DB and populate it
 
-  // res.locals.currentImage = 'current'; //I don't need this, as my current code already facilitates this. Maybe implement it after
+app.get('/gallery', function(req, res) {
+  res.locals.currentGallery = 'current-page'
+  // use image model to return all matching Schema from the db
+  Image.find(function(error, result) {
 
-  // Use the Image.js model I created to pull images from the Atlas. Anything in gallery, matching the object key value pairs
-  // app.get('/gallery', function(req, res) {
-  //   Image.find(function(error, result) {
-  //     res.render('gallery', {gallery: result})
-  //   });
-  // });
-
-  // app.get('/gallery', function(req, res) {
-  //   Image.find({}, function(err, res) {
-  //     if (err) throw err;
-  //     res.render('gallery', {galleries: data});
-  //   })
-  // })
-
-
-  app.get('/gallery', function(req, res) {
-    Image.find(function(error, result) {
-      // res.locals.gal = result;
-      console.log(result)
-      res.render('gallery', {images: result})
-    });
-  });
-//   Image.find(function(error, result){
-//     res.render('gallery', {gallery: result});
-//   });
-// });
-
-//This still seems out of place, but it could be very useful...
-// This is like... running a forEach loop on all of the images from the images folder, then if one of them matches the id of.. I guess the current picture's title will be rendered for use as the page's title.
-
-// app.get('/gallery/:id', function(req, res) {
-//   res.locals.imageID = req.params.id;
-//   res.render('expandedCard', {});
-// }); 
-// console.log (gallery);
-// app.get('/gallery/:id', function(req, res, next){
-//   gallery.forEach(function(object){
-//     // res.locals.imageID = req.params.id;
-//     if(object.id === req.params.id){
-//       res.render('expandedCard',{title: `${req.params.id}`});
-//       return;
-//     }
-//   })
-//   next();
-// });
-
-
-// I believe that the above code does not actually find the picture for the gallery, because it is returning the title: req.params.id, which is then supposed to be used to be used in the next code, to step into the database and look for the matching id? Although I don't think that this is really the way to write the code... It seems like maybe I should stick to id, instead of title. Also is the return even necessary? Is it possible to just use continue instead? Test more tomorrow.
-app.get('/gallery/:id', function(req, res) {
-  Image.findOne({id: req.params.id}, function(error, result){
     if(error){
       return console.log(error);
-    }
-    // res.locals.imageID = req.params.id;
+    };
+    
+    // Render page using the returned object data, and matching the info with the images stored in public
+    res.render('gallery', {images: result})
+  });
+});
+
+
+app.get('/gallery/:id', function(req, res) {
+  // Find one image in the db, matching the id passed in from the url endpoint
+  Image.findOne({id: req.params.id}, function(error, result){
+    
+    if(error){
+      return console.log(error);
+    };
+    // render the expanded card page from the data take from the selected endpoint
     res.render('expandedCard', {image: result});
   });
 });
 
 
-/// insert post and slugify stuff here, if I think that I need it
 
-// app.get('/blog', function(req, res) {
-//   res.render('blog', pageAttributes.blog);
-// });
-
-// --- 404 error page --- //
+// Handling the 404 error, if I find time, I'll make a style page redirect for this, I think... Have to look into the fs module more
 app.use(function(req, res){
-  // 
+  
+  // Two of these lines are something from an fs module, I'm keeping them for reference, but not using them in the scope of this assignment -- no time
   // res.writeHead(404, {'Content-Type': 'text/html'});
   // fs.createReadStream(__dirname + '/404.html').pipe(res);   // This is only if I am using the fs modle
   res.status(404);
@@ -206,9 +137,10 @@ app.use(function(req, res){
 });
 
 
-// --- Localhost: 3000 --- //
+// assign PORT to default to 3000 for the local host, if no other PORt has been decided by the user or the db
 const PORT = process.env.PORT || 3000;
 
+// Begin listening to the port
 app.listen(PORT, function(){
   console.log(`Listening on port ${PORT}`);
 });
